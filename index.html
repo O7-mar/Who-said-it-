@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من قالها؟</title> <!-- تم تغيير العنوان ليكون أكثر تحديداً -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- سيتم عرض القائمة الرئيسية بواسطة JavaScript -->
+    </div>
+
+    <!-- القوالب للشاشات الأخرى -->
+    <template id="memory-phase-template">
+        <div class="memory-phase">
+            <div class="phase-header">
+                <h2>مرحلة الحفظ</h2>
+                <div class="timer">
+                    <span id="timer-value">60</span> ثانية
+                </div>
+                <!-- *** إضافة زر العودة للقائمة *** -->
+                <button id="back-to-menu-btn" class="back-btn ingame-back-btn">العودة للقائمة</button>
+            </div>
+            
+            <div class="cards-container" id="memory-cards">
+                <!-- سيتم إنشاء البطاقات ديناميكياً -->
+            </div>
+            
+            <div class="phase-footer">
+                <div class="instruction">احفظ الأبيات وأسماء الشعراء</div>
+            </div>
+        </div>
+    </template>
+    
+    <template id="challenge-phase-template">
+        <div class="challenge-phase">
+            <div class="phase-header">
+                <h2>التحدي</h2> <!-- تم تغيير العنوان -->
+                <div class="score">
+                    <div class="score-section">
+                        <div class="score-label">أنت</div>
+                        <div class="score-value" id="player-score">0</div>
+                    </div>
+                    <div class="score-section">
+                        <div class="score-label">الذكاء الاصطناعي</div>
+                        <div class="score-value" id="ai-score">0</div>
+                    </div>
+                </div>
+                 <!-- *** إضافة زر العودة للقائمة *** -->
+                <button id="back-to-menu-btn" class="back-btn ingame-back-btn">العودة للقائمة</button>
+            </div>
+            
+            <div class="verse-display">
+                <div id="current-verse">سيتم عرض البيت هنا...</div>
+                <!-- تم حذف زر الاستماع للبيت -->
+            </div>
+            
+            <div class="poets-grid-container" id="poet-cards">
+                <!-- سيتم إنشاء بطاقات الشعراء ديناميكياً -->
+            </div>
+            
+            <div class="phase-footer">
+                <div class="instruction">اضغط على اسم الشاعر الصحيح</div>
+            </div>
+        </div>
+    </template>
+    
+    <template id="instructions-template">
+        <div class="instructions-screen">
+            <h2>تعليمات اللعبة</h2>
+            
+            <div class="instruction-section">
+                <h3>المرحلة الأولى: عرض البطاقات (مرحلة الحفظ)</h3>
+                <ul>
+                    <li>تظهر 15 بطاقة على الشاشة، كل بطاقة تحتوي على بيت شعر مشهور واسم الشاعر.</li>
+                    <li>لديك 60 ثانية لحفظ البطاقات.</li>
+                    <li>يمكنك الضغط على أي بطاقة لتكبيرها.</li>
+                </ul>
+            </div>
+            
+            <div class="instruction-section">
+                <h3>المرحلة الثانية: التحدي</h3>
+                <ul>
+                    <li>تظهر 15 بطاقة تحمل أسماء الشعراء فقط.</li>
+                    <li>يتم عرض بيت شعر عشوائي من المجموعة السابقة.</li>
+                    <li>اضغط بسرعة على اسم الشاعر الصحيح قبل الذكاء الاصطناعي.</li>
+                    <li>أول من يجمع 5 بطاقات يفوز بالجولة.</li>
+                </ul>
+            </div>
+            
+            <div class="instruction-section">
+                <h3>مستويات الصعوبة</h3>
+                <ul>
+                    <li>سهل: الذكاء الاصطناعي يخطئ كثيراً، ويضغط بعد 4–8 ثوانٍ.</li>
+                    <li>متوسط: الذكاء الاصطناعي يضغط خلال 3–6 ثوانٍ ويخطئ أحياناً.</li>
+                    <li>صعب: الذكاء الاصطناعي يضغط خلال 2–4 ثوانٍ وبدقة متوسطة.</li>
+                </ul>
+            </div>
+            
+            <button class="back-btn">عودة</button>
+        </div>
+    </template>
+    
+    <template id="stats-template">
+        <div class="stats-screen">
+            <h2>الإحصائيات</h2>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-label">عدد الجولات المكتملة:</div>
+                    <div class="stat-value" id="completed-rounds">0</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">عدد الجولات المربوحة:</div>
+                    <div class="stat-value" id="won-rounds">0</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">نسبة الفوز:</div>
+                    <div class="stat-value" id="win-percentage">0%</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">أفضل وقت استجابة:</div>
+                    <div class="stat-value" id="best-response-time">غير متوفر حالياً</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">متوسط وقت الاستجابة:</div>
+                    <div class="stat-value" id="avg-response-time">غير متوفر حالياً</div>
+                </div>
+            </div>
+            
+            <button class="reset-stats-btn">إعادة تعيين الإحصائيات</button>
+            <button class="back-btn">عودة</button>
+        </div>
+    </template>
+    
+    <template id="result-template">
+        <div class="result-screen">
+            <h2 id="result-title">نتيجة الجولة</h2>
+            
+            <div class="result-details">
+                <div class="final-score">
+                    <div class="player-final-score">أنت: <span id="player-final-score">0</span></div>
+                    <div class="ai-final-score">الذكاء الاصطناعي: <span id="ai-final-score">0</span></div>
+                </div>
+                
+                <div class="result-message" id="result-message">
+                    <!-- سيتم إضافة رسالة النتيجة ديناميكياً -->
+                </div>
+            </div>
+            
+            <div class="result-actions">
+                <button class="play-again-btn">العب مرة أخرى</button>
+                <button class="main-menu-btn">القائمة الرئيسية</button>
+            </div>
+        </div>
+    </template>
+
+    <audio id="correct-sound" src="audio/correct.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="audio/wrong.mp3" preload="auto"></audio>
+    <audio id="countdown-sound" src="audio/countdown.mp3" preload="auto"></audio>
+    <audio id="win-sound" src="audio/win.mp3" preload="auto"></audio>
+    <audio id="lose-sound" src="audio/lose.mp3" preload="auto"></audio>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
